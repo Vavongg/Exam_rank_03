@@ -25,7 +25,7 @@ char *ft_strdup(char *str)
     return new;
 }
 
-char *get_stdin(void)
+char *gnl(void)
 {
     static char buffer[1024];
     static int pos = 0;
@@ -39,11 +39,16 @@ char *get_stdin(void)
         {
             b_read = read(0, buffer, 1024);
             pos = 0;
-            if (b_read <= 0)
+            if (b_read == 0)
                 break;
+			if (b_read < 0)
+			{
+				perror("Error");
+				return NULL;
+			}
         }
         line[i++] = buffer[pos++];
-        if (line[i - 1] == '\n')
+        if (line[i - 1] == '\0')
             break;
     }
     if (i == 0)
@@ -81,7 +86,7 @@ int main(int ac, char **av)
 {
     if (ac != 2)
         return 1;
-    char *str = get_stdin();
+    char *str = gnl();
     if (!str)
         return 1;
     char *filter = av[1];

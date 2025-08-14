@@ -7,24 +7,28 @@
 #define BUFFER_SIZE 1024
 #endif
 
-char *ft_strdup(char *src)
+int	ft_strlen(char *str)
 {
 	int i = 0;
-	char *dest;
 
-	while (src[i])
+	while (str[i])
 		i++;
-	dest = (char *)malloc(sizeof(char) * (i + 1));
-	if (!dest)
-		return NULL;
-	i = 0;
-	while (src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return dest;
+	return (i);
+}
+
+char *ft_strdup(char *str)
+{
+    int i = 0;
+    char *new = malloc(sizeof(char) * (ft_strlen(str) + 1));
+    if (!new)
+        return NULL;
+    while (str[i])
+    {
+        new[i] = str[i];
+        i++;
+    }
+    new[i] = '\0';
+    return new;
 }
 
 char *gnl(int fd)
