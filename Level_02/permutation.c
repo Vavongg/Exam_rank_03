@@ -1,6 +1,5 @@
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 int ft_strlen(char *str)
 {
@@ -64,7 +63,7 @@ void generate(char *str, char *result, int *used, int len, int depth)
 
 int main(int ac, char **av)
 {
-	if(ac != 2 || check_dup(av[1]))
+	if(ac != 2)
 		return 1;
 	int len = ft_strlen(av[1]);
 	char *result = malloc(len + 1);

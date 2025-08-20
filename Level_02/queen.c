@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
 void print_board(int *board, int n)
 {
 	int i = 0;
@@ -57,7 +61,5 @@ int main(int argc, char **argv)
 		++i;
 	}
 	nqueen(n, board, 0);
-	free(board);
 	return (0);
 } 
-		

@@ -48,8 +48,6 @@ void    calc_min(char *str, int *min, int index, int change)
     }
 }
 
-
-
 void    rip(char *str, int min, int index, int change)
 {
     int        i;
