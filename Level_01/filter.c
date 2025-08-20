@@ -1,101 +1,106 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <unistd.h>
+#include <stdio.h>
 
-int ft_strlen(char *str)
+int ft_strlen(char *s)
 {
-    int i = 0;
-    while (str[i])
-        i++;
-    return i;
+	int i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
 
 char *ft_strdup(char *str)
 {
-    int i = 0;
-    char *new = malloc(sizeof(char) * (ft_strlen(str) + 1));
-    if (!new)
-        return NULL;
-    while (str[i])
-    {
-        new[i] = str[i];
-        i++;
-    }
-    new[i] = '\0';
-    return new;
+	int i = 0;
+	char *dest = malloc(sizeof(char) * ft_strlen(str) + 1);
+	if (!dest)
+		return (NULL);
+	while (str[i])
+	{
+		dest[i] = str[i];
+		i++;
+	}
+	dest[i] = 0;
+	return (dest);
 }
 
-char *gnl(void)
+void print_it(int n)
 {
-    static char buffer[1024];
-    static int pos = 0;
-    static int b_read = 0;
-    char line[70000];
-    int i = 0;
+	int i = 0;
+	while (i < n)
+	{
+		write(1, "*", 1);
+		i++;
+	}
+}
 
-    while (1)
-    {
-        if (pos >= b_read)
-        {
-            b_read = read(0, buffer, 1024);
-            pos = 0;
-            if (b_read == 0)
-                break;
+char *ft_get_line()
+{
+	static char buffer[10];
+	char line[100000];
+	static int pos = 0;
+	static int b_read = 0;
+	int i = 0;
+	while (1)
+	{
+		if (pos >= b_read)
+		{
+			b_read = read(0, buffer, 10);
+			pos = 0;
+			if (b_read == 0)
+				break;
 			if (b_read < 0)
 			{
 				perror("Error");
-				return NULL;
+				return (NULL);
 			}
-        }
-        line[i++] = buffer[pos++];
-        if (line[i - 1] == '\0')
-            break;
-    }
-    if (i == 0)
-        return NULL;
-    line[i] = '\0';
-    return ft_strdup(line);
+		}
+		line[i++] = buffer[pos++];
+	}
+	if (i == 0)
+		return (NULL);
+	line[i] = 0;
+	return (ft_strdup(line));
 }
 
-char *str_filter(char *str, char *filter)
+void filter_sh(char *str, char *filter)
 {
-    char *new = ft_strdup(str);
     int i = 0;
+    int j;
     int len = ft_strlen(filter);
 
     while (str[i])
     {
-        if (str[i] == filter[0])
+        j = 0;
+        while (str[i + j] && str[i + j] == filter[j])
+            j++;
+        if (j == len)
         {
-            int j = 1;
-            while (j < len && str[i + j] == filter[j])
-                j++;
-            if (j == len)
-            {
-                for (int k = 0; k < len; k++)
-                    new[i + k] = '*';
-                i += len - 1;
-            }
+            print_it(len);
+            i += len;
         }
-        i++;
+        else
+        {
+            write(1, &str[i], 1);
+            i++;
+        }
     }
-    return new;
 }
 
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
-    if (ac != 2)
-        return 1;
-    char *str = gnl();
-    if (!str)
-        return 1;
-    char *filter = av[1];
-    char *fstr = str_filter(str, filter);
-    if (!fstr)
-        return 1;
-    printf("%s", fstr);
-    free(str);
-    free(fstr);
-    return 0;
-}
+	char *s;
 
+	if (argc != 2 || !argv[1][0])
+		return (1);
+	s = ft_get_line();
+	while (s)
+	{
+		filter_sh(s, argv[1]);
+		free(s);
+		s = ft_get_line();
+	}
+	free(s);
+	return (0);
+}
