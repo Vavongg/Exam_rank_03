@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 int ft_strlen(char *str)
 {
@@ -14,15 +15,13 @@ int ft_strlen(char *str)
 void sorted(char *str)
 {
 	char 	tmp;
-	int		i;
+	int		i = 0;
 	int		j;
 
-	i = 0;
-	j = i + 1;
-
-	while (str[i] != '\0')
+	while (str[i])
 	{
-		while (str[j] != '\0')
+		j = i + 1;
+		while (str[j])
 		{
 			if (str[i] > str[j])
 			{
@@ -37,15 +36,13 @@ void sorted(char *str)
 	return ;
 }
 
-void generate(char *str, char *result, int *used, int len, int depth)
+void	permut(char *str, char *res, int *used, int len, int pos)
 {
-    int i;
+    int i = 0;
 
-	i = 0;
-	if (depth == len)
+	if (pos == len)
 	{
-        write(1, result, len);
-        write(1, "\n", 1);
+        puts(res);
         return;
     }
 	while (i < len)
@@ -53,8 +50,8 @@ void generate(char *str, char *result, int *used, int len, int depth)
 		if (!used[i])
 		{
 			used[i] = 1;
-			result[depth] = str[i];
-			generate(str, result, used, len, depth + 1);
+			res[pos] = str[i];
+			permut(str, res, used, len, pos + 1);
 			used[i] = 0;
 		}
 		i++;
@@ -63,15 +60,16 @@ void generate(char *str, char *result, int *used, int len, int depth)
 
 int main(int ac, char **av)
 {
-	if(ac != 2)
-		return 1;
 	int len = ft_strlen(av[1]);
 	char *result = malloc(len + 1);
     int *used = calloc(len, sizeof(int));
+
 	if(!result || !used)
 		return 1;
+	if (ac != 2)
+		return 1;
 	sorted(av[1]);
-    generate(av[1], result, used, len, 0);
+    permut(av[1], result, used, len, 0);
     free(result);
     free(used);
 	return 0;

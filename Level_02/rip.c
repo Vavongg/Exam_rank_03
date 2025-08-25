@@ -1,82 +1,76 @@
 #include <stdio.h>
-#include <string.h>
 #include <unistd.h>
-// don't forget to print space instead of _ ana i used _ for clarity wsalam
 
-int    is_valid(char *str)
+int    ft_strlen(char *s)
 {
     int    i;
-    int    res;
 
     i = 0;
-    res = 0;
-    while (str[i])
-    {
-        if (str[i] == '(')
-            res++;
-        if (str[i] == ')')
-            res--;
-        if (res < 0)
-            return (0);
+    while (s[i])
         i++;
-    }
-    if (res == 0)
-        return (1);
-    return (0);
+    return (i);
 }
 
-void    calc_min(char *str, int *min, int index, int change)
+int    balanced(char *s)
 {
-    int        i;
-    char    c;
-  if (change > *min)
-      return ;
-        if (is_valid(str) && change < *min)
+    int    i;
+    int    open;
+    int    closes;
+
+    i = 0;
+    open = 0;
+    closes = 0;
+    while (s[i])
+    {
+        if (s[i] == '(')
+            open++;
+        else if (s[i] == ')')
         {
-            *min = change;
+            if (open > 0)
+                open--;
+            else
+                closes++;
         }
-    i = index;
-    while (str[i])
-    {
-        c = str[i];
-        str[i] = '_';
-        change++;
-        calc_min(str, min, i + 1, change);
-        str[i] = c;
-        change--;
         i++;
     }
+    return (open + closes);
 }
 
-void    rip(char *str, int min, int index, int change)
+void    bt(int i, int to_remove, int removed, char *s)
 {
-    int        i;
-    char    c;
-  if (change > min)
-      return ;
-        if (is_valid(str) && change == min)
-            puts(str);
-    i = index;
-    while (str[i])
+    char    tmp;
+
+    if (i == ft_strlen(s))
     {
-        c = str[i];
-        str[i] = '_';
-        change++;
-        rip(str, min, i + 1, change);
-        str[i] = c;
-        change--;
-        i++;
+        if (!balanced(s) && to_remove == removed)
+            puts(s);
+        return ;
     }
+    if (removed > to_remove)
+        return ;
+    if (s[i] == '(' || s[i] == ')')
+    {
+        tmp = s[i];
+        s[i] = ' ';
+        bt(i + 1, to_remove, removed + 1, s);
+        s[i] = tmp;
+        bt(i + 1, to_remove, removed, s);
+    }
+    else
+        bt(i + 1, to_remove, removed, s);
 }
 
 int    main(int ac, char **av)
 {
-    if (ac != 2 || av[1][0] == 0)
+    if (ac != 2 || av[1][0] == '\0')
     {
-        write (1,"\n",1);
+        write(1, "\n", 1);
         return (1);
     }
-    int min = strlen(av[1]);
-    calc_min(av[1], &min, 0, 0);
-    rip(av[1], min, 0, 0);
+    if (!balanced(av[1]))
+    {
+        puts(av[1]);
+        return (0);
+    }
+    bt(0, balanced(av[1]), 0, av[1]);
 }
